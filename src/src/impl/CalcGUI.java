@@ -10,7 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CalcGUI implements ActionListener {
-    private final JTextField fromCurrencyValue, changeExchangeRateTextField, addCurrencyNameField, addCurrencyValueField;
+    private final JTextField fromCurrencyValue, changeExchangeRateTextField
+            , addCurrencyNameField, addCurrencyValueField;
     private final JLabel toCurrencyValue;
     private final JComboBox<String> fromCurrencyName, toCurrencyName, changeExchangeRateBox;
     private final JComboBox<String> chooseCalculatorImpl;
@@ -47,7 +48,6 @@ public class CalcGUI implements ActionListener {
         frame.setVisible(true);
         frame.setTitle("Currency Calculator");
 
-
         JPanel toolsPanel = new JPanel();
         toolsPanel.setPreferredSize(new Dimension(frame.getWidth(), 50));
         JLabel implementationInfo = new JLabel("used implementation of Calc: ");
@@ -63,6 +63,7 @@ public class CalcGUI implements ActionListener {
         JPanel defaultScreen = new JPanel();
         defaultScreen.setBorder(BorderFactory.createEmptyBorder(40, 70, 10, 70));
 
+        // default display currencies
         fromCurrency = euro;
         toCurrency = euro;
 
@@ -182,25 +183,28 @@ public class CalcGUI implements ActionListener {
             String chosenImpl = (String) chooseCalculatorImpl.getSelectedItem();
             assert chosenImpl != null;
             // decided which calc to use and changes the GUI for the user
+            // both come from the interface CalcInt
             if (chosenImpl.equals(ASINTERFACE)) {
                 calc = new CalcWithInt();
+                // uses the original currencies + the ones that already got created in the interface earlier
                 calc.setCurrencies(currencyCarry);
                 menuBar.setVisible(true);
                 updateCurrenciesAndComboBoxes();
             }
             // as enum
             if (chosenImpl.equals(ASENUM)) {
+               // to Carry the values over in case new ones got created
                currencyCarry = calc.getCurrencies();
                calc = new CalcWithEnum();
                menuBar.setVisible(false);
                updateCurrenciesAndComboBoxes();
             }
-
         }
     }
 
     // calls the exchange methode through the CalcInt interface
     private void convert() {
+        // only activates if value is given, so no error occurs
         if (!fromCurrencyValue.getText().isEmpty()){
             double toExchangeCurrencyConverted =
                     calc.exchange(fromCurrency
