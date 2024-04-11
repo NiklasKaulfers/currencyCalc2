@@ -26,7 +26,6 @@ public class CalcGUI implements ActionListener {
     private String[] currencyNamesExport;
     private List<Currency> currencies;
     private List<Currency> currencyCarry;
-    private int calcOperation;
 
 
     public CalcGUI() {
@@ -49,8 +48,6 @@ public class CalcGUI implements ActionListener {
         frame.setTitle("Currency Calculator");
 
 
-        // a tool to decide which implication of the calculator is used
-        calcOperation = 1;
         JPanel toolsPanel = new JPanel();
         toolsPanel.setPreferredSize(new Dimension(frame.getWidth(), 50));
         JLabel implementationInfo = new JLabel("used implementation of Calc: ");
@@ -188,7 +185,6 @@ public class CalcGUI implements ActionListener {
             if (chosenImpl.equals(ASINTERFACE)) {
                 calc = new CalcWithInt();
                 calc.setCurrencies(currencyCarry);
-                calcOperation = 1;
                 menuBar.setVisible(true);
                 updateCurrenciesAndComboBoxes();
             }
@@ -196,7 +192,6 @@ public class CalcGUI implements ActionListener {
             if (chosenImpl.equals(ASENUM)) {
                currencyCarry = calc.getCurrencies();
                calc = new CalcWithEnum();
-               calcOperation = 2;
                menuBar.setVisible(false);
                updateCurrenciesAndComboBoxes();
             }
@@ -220,14 +215,9 @@ public class CalcGUI implements ActionListener {
     private void updateCurrenciesAndComboBoxes() {
         List<Currency> updatedCurrencies = calc.getCurrencies();
         currencyNames = new ArrayList<> ();
-
-//        for (Currency currency : updatedCurrencies){
-//            currencyNames.add(currency.getName());
-//        }
         // comboBoxes need an array of Strings to work
         // to not change currencyNames to Array 3 times, we have the currencyNamesExport variable
         currencyNamesExport = updatedCurrencies.stream().map(Currency::getName).toArray(String[]::new);
-        //currencyNamesExport = currencyNames.toArray(new String[0]);
         currencies = updatedCurrencies;
 
         fromCurrencyName.setModel(new DefaultComboBoxModel<>(currencyNamesExport));
