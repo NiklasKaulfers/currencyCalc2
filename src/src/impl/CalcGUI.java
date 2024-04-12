@@ -10,6 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+/**
+ * the GUI that allows user input and shows the output for the currency calculator
+ */
 public class CalcGUI implements ActionListener {
     private final JTextField fromCurrencyValue, changeExchangeRateTextField
             , addCurrencyNameField, addCurrencyValueField;
@@ -29,6 +32,9 @@ public class CalcGUI implements ActionListener {
     private List<Currency> currencyCarry;
 
 
+    /**
+     * basic creating of the GUI
+     */
     public CalcGUI() {
         JFrame frame = new JFrame();
         frame.setSize(new Dimension(700, 480));
@@ -127,6 +133,10 @@ public class CalcGUI implements ActionListener {
         frame.pack();
     }
 
+    /**
+     * handles the events if the user interacts with the GUI
+     *  @param e the event to be processed
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == fromCurrencyValue) {
@@ -146,20 +156,24 @@ public class CalcGUI implements ActionListener {
                         .get();
             } catch (NoSuchElementException ex){
                 System.err.println(ex.getMessage());
+                // sets fromCurrency to currency at 0 to not cause error at convert
+                fromCurrency = currencies.getFirst();
             }
             convert();
         }
 
         if (e.getSource() == toCurrencyName){
-            String selectedToCurrency = (String) toCurrencyName.getSelectedItem();
+        // TODO: Testings here
             try {
                 toCurrency = currencies
                         .stream()
-                        .filter(currency -> currency.getName().equals(selectedToCurrency))
+                        .filter(currency -> currency.getName().equals(toCurrencyName.getSelectedItem()))
                         .findFirst()
                         .get();
             }catch (NoSuchElementException ex){
                 System.err.println(ex.getMessage());
+                // sets toCurrency to currency at 1 to not cause error in convert
+                toCurrency = currencies.get(1);
             }
             convert();
         }
@@ -210,6 +224,9 @@ public class CalcGUI implements ActionListener {
         }
     }
 
+    /**
+     * calls the exchange function of CalcInt
+     */
     // calls the exchange methode through the CalcInt interface
     private void convert() {
         // only activates if value is given, so no error occurs
@@ -222,8 +239,12 @@ public class CalcGUI implements ActionListener {
             toCurrencyValue.setText(Double.toString(toExchangeCurrencyConverted));
         }
     }
-    // sets the values in the combo boxes, that display the currencies
-    // also uses the CalcInt interface
+
+    /**
+     * sets the values in the combo boxes, that display the currencies
+     * also uses the CalcInt interface
+     */
+
     private void updateCurrenciesAndComboBoxes() {
         currencies = calc.getCurrencies();
         // comboBoxes need an array of Strings to work
