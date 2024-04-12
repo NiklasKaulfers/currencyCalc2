@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 public class CalcGUI implements ActionListener {
     private final JTextField fromCurrencyValue, changeExchangeRateTextField
@@ -23,7 +24,6 @@ public class CalcGUI implements ActionListener {
     private CalcInt calc = new CalcWithInt();
     private Currency fromCurrency;
     private Currency toCurrency;
-    private List<String> currencyNames;
     private String[] currencyNamesExport;
     private List<Currency> currencies;
     private List<Currency> currencyCarry;
@@ -67,11 +67,9 @@ public class CalcGUI implements ActionListener {
         fromCurrency = euro;
         toCurrency = euro;
 
-        currencyNames = new ArrayList<>();
-        for (Currency currency : currencies){
-            currencyNames.add(currency.getName());
-        }
-        currencyNamesExport = currencyNames.toArray(new String[0]);
+        // for the comboBoxes as they need an array
+        // gets the names of each Currency and puts them in an array
+        currencyNamesExport = currencies.stream().map(Currency::getName).toArray(String[]::new);
 
         menuBar = new JMenuBar();
         JPanel exchangeRateItem = new JPanel();
@@ -138,21 +136,31 @@ public class CalcGUI implements ActionListener {
         // change fromCurrencyName and toCurrencyName to one
         // this should be faster tho
         if (e.getSource() == fromCurrencyName){
+            // it´s different from other code and sets the result easier
             String selectedFromCurrency = (String) fromCurrencyName.getSelectedItem();
-            fromCurrency = currencies
-                    .stream()
-                    .filter(currency -> currency.getName().equals(selectedFromCurrency))
-                    .findFirst()
-                    .get();
+            try {
+                fromCurrency = currencies
+                        .stream()
+                        .filter(currency -> currency.getName().equals(selectedFromCurrency))
+                        .findFirst()
+                        .get();
+            } catch (NoSuchElementException ex){
+                System.err.println(ex.getMessage());
+            }
             convert();
         }
+
         if (e.getSource() == toCurrencyName){
             String selectedToCurrency = (String) toCurrencyName.getSelectedItem();
-            toCurrency = currencies
-                    .stream()
-                    .filter(currency -> currency.getName().equals(selectedToCurrency))
-                    .findFirst()
-                    .get();
+            try {
+                toCurrency = currencies
+                        .stream()
+                        .filter(currency -> currency.getName().equals(selectedToCurrency))
+                        .findFirst()
+                        .get();
+            }catch (NoSuchElementException ex){
+                System.err.println(ex.getMessage());
+            }
             convert();
         }
         if (e.getSource() == changeExchangeRateTextField) {
@@ -217,12 +225,10 @@ public class CalcGUI implements ActionListener {
     // sets the values in the combo boxes, that display the currencies
     // also uses the CalcInt interface
     private void updateCurrenciesAndComboBoxes() {
-        List<Currency> updatedCurrencies = calc.getCurrencies();
-        currencyNames = new ArrayList<> ();
+        currencies = calc.getCurrencies();
         // comboBoxes need an array of Strings to work
         // to not change currencyNames to Array 3 times, we have the currencyNamesExport variable
-        currencyNamesExport = updatedCurrencies.stream().map(Currency::getName).toArray(String[]::new);
-        currencies = updatedCurrencies;
+        currencyNamesExport = currencies.stream().map(Currency::getName).toArray(String[]::new);
 
         fromCurrencyName.setModel(new DefaultComboBoxModel<>(currencyNamesExport));
         toCurrencyName.setModel(new DefaultComboBoxModel<>(currencyNamesExport));
