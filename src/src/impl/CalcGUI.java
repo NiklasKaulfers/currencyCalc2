@@ -30,6 +30,7 @@ public class CalcGUI implements ActionListener {
     private String[] currencyNamesExport;
     private List<Currency> currencies;
     private List<Currency> currencyCarry;
+    Currency euro = new Currency("EUR", 1);
 
 
     /**
@@ -42,7 +43,6 @@ public class CalcGUI implements ActionListener {
 
         // Default currencies
         currencies = new ArrayList<>();
-        Currency euro = new Currency("EUR", 1);
         currencies.add(euro);
         Currency usd = new Currency("USD", 1.09);
         currencies.add(usd);
@@ -80,7 +80,12 @@ public class CalcGUI implements ActionListener {
         menuBar = new JMenuBar();
         JPanel exchangeRateItem = new JPanel();
         JLabel changeExchangeRatLabel = new JLabel("Change value to 1 euro of:");
-        changeExchangeRateBox = new JComboBox<>(currencyNamesExport);
+        changeExchangeRateBox = new JComboBox<>(currencies
+                .stream()
+                .map(Currency::getName)
+                .filter(c -> !c.equals(euro.getName()))
+                .toArray(String[]::new)
+        );
         changeExchangeRateTextField = new JTextField();
         changeExchangeRateTextField.setPreferredSize(new Dimension(70, 20));
         changeExchangeRateTextField.addActionListener(this);
@@ -253,6 +258,13 @@ public class CalcGUI implements ActionListener {
 
         fromCurrencyName.setModel(new DefaultComboBoxModel<>(currencyNamesExport));
         toCurrencyName.setModel(new DefaultComboBoxModel<>(currencyNamesExport));
+        // slightly big expression
+        // makes the same list but with no euro, so we don´t change it´s value
+        currencyNamesExport = currencies
+                .stream()
+                .map(Currency::getName)
+                .filter(c -> !c.equals(euro.getName()))
+                .toArray(String[]::new);
         changeExchangeRateBox.setModel(new DefaultComboBoxModel<>(currencyNamesExport));
     }
 }
