@@ -2,6 +2,7 @@ package src.impl;
 
 import src.api.*;
 
+import java.io.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -13,7 +14,7 @@ import java.util.NoSuchElementException;
 /**
  * the GUI that allows user input and shows the output for the currency calculator
  */
-public class CalcGUI implements ActionListener {
+public class CalcGUI  implements ActionListener{
     private final JTextField fromCurrencyValue, changeExchangeRateTextField
             , addCurrencyNameField, addCurrencyValueField;
     private final JLabel toCurrencyValue;
@@ -30,29 +31,54 @@ public class CalcGUI implements ActionListener {
     private String[] currencyNamesExport;
     private List<Currency> currencies;
     private List<Currency> currencyCarry;
+    private String chosenImpl = ASINTERFACE;
     Currency euro = new Currency("EUR", 1);
 
 
     /**
      * basic creating of the GUI
      */
-    public CalcGUI() {
+    public CalcGUI() throws IOException{
         JFrame frame = new JFrame();
         frame.setSize(new Dimension(700, 480));
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // Default currencies
         currencies = new ArrayList<>();
-        currencies.add(euro);
-        Currency usd = new Currency("USD", 1.09);
-        currencies.add(usd);
-        Currency czk = new Currency("CZK", 25);
-        currencies.add(czk);
-        // Calc as Interface
-        calc.setCurrencies(currencies);
 
-        frame.setVisible(true);
-        frame.setTitle("Currency Calculator");
+        // file reader for save-files
+        if (new File("currencies.txt").isFile()) {
+            try {
+                BufferedReader br = new BufferedReader(new FileReader("currencies.txt"));
+                String line;
+                while ((line = br.readLine()) != null) {
+                    boolean foundSwitch = false;
+                    String currencyName = "";
+                    String currencyValue = "";
+                    for (int i = 0; i < line.length(); i++) {
+                        if (Character.isDigit(line.charAt(i))) {
+                            foundSwitch = true;
+                        }
+                        if (!foundSwitch) {
+                            currencyName = currencyName + line.charAt(i);
+                        } else {
+                            currencyValue = currencyValue + line.charAt(i);
+                        }
+                    }
+                    currencies.add(new Currency(currencyName, Double.parseDouble(currencyValue)));
+                }
+                br.close();
+            } catch (IOException e) {
+                System.err.println(e.getMessage());
+            }
+        } else {
+            currencies.add(euro);
+            Currency usd = new Currency("USD", 1.09);
+            currencies.add(usd);
+            Currency czk = new Currency("CZK", 25);
+            currencies.add(czk);
+        }
+        calc.setCurrencies(currencies);
 
         JPanel toolsPanel = new JPanel();
         toolsPanel.setPreferredSize(new Dimension(frame.getWidth(), 50));
@@ -131,6 +157,9 @@ public class CalcGUI implements ActionListener {
         defaultScreen.add(fromCurrencyValue, BorderLayout.NORTH);
         defaultScreen.add(toCurrencyName, BorderLayout.SOUTH);
         defaultScreen.add(toCurrencyValue, BorderLayout.SOUTH);
+
+        updateCurrenciesAndComboBoxes();
+
         frame.add(defaultScreen, BorderLayout.CENTER);
         frame.add(menuBar, BorderLayout.NORTH);
         frame.setVisible(true);
@@ -207,7 +236,7 @@ public class CalcGUI implements ActionListener {
         }
         if (e.getSource() == chooseCalculatorImpl){
             toCurrencyValue.setText("---");
-            String chosenImpl = (String) chooseCalculatorImpl.getSelectedItem();
+            chosenImpl = (String) chooseCalculatorImpl.getSelectedItem();
             assert chosenImpl != null;
             // decided which calc to use and changes the GUI for the user
             // both come from the interface CalcInt
@@ -247,11 +276,24 @@ public class CalcGUI implements ActionListener {
 
     /**
      * sets the values in the combo boxes, that display the currencies
+     * creates a file that stores the currencies, so they stay saved after closing
      * also uses the CalcInt interface
      */
 
     private void updateCurrenciesAndComboBoxes() {
         currencies = calc.getCurrencies();
+        if (chosenImpl.equals(ASINTERFACE)) {
+            try {
+                BufferedWriter writer = new BufferedWriter(new FileWriter("currencies.txt"));
+                for (Currency currency : currencies) {
+                    writer.write(currency.getName() + currency.getValueToEuro() + "\n");
+                }
+                writer.close();
+            } catch (IOException e) {
+                System.err.println(e.getMessage());
+            }
+        }
+
         // comboBoxes need an array of Strings to work
         // to not change currencyNames to Array 3 times, we have the currencyNamesExport variable
         currencyNamesExport = currencies.stream().map(Currency::getName).toArray(String[]::new);

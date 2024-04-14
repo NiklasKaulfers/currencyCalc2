@@ -26,6 +26,14 @@ public class Currency{
     }
 
     /**
+     * allows the user to change the name
+     * @param name new name for the currency
+     */
+    void setName(String name){
+        this.name = name;
+    }
+
+    /**
      * @return returns how much of this currency is equal to 1 euro
      */
     double getValueToEuro(){
