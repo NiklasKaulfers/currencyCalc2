@@ -158,7 +158,9 @@ public class CalcGUI  implements ActionListener{
         defaultScreen.add(toCurrencyName, BorderLayout.SOUTH);
         defaultScreen.add(toCurrencyValue, BorderLayout.SOUTH);
 
-        updateCurrenciesAndComboBoxes();
+        // updates save data and the comboBoxes
+        updateCurrencies();
+        updateComboBoxes();
 
         frame.add(defaultScreen, BorderLayout.CENTER);
         frame.add(menuBar, BorderLayout.NORTH);
@@ -218,6 +220,7 @@ public class CalcGUI  implements ActionListener{
                 if (selectedExchangeRateChangeString.equals(currency.getName()))
                     currency.setValueToEuro(Double.parseDouble(changeExchangeRateTextField.getText()));
             }
+            updateCurrencies();
             convert();
         }
         if (e.getSource() == addCurrency) {
@@ -231,7 +234,8 @@ public class CalcGUI  implements ActionListener{
                 );
                 calc.addCurrency(newCurrency);
                 // Update currency arrays and combo boxes
-                updateCurrenciesAndComboBoxes();
+                updateCurrencies();
+                updateComboBoxes();
             }
         }
         if (e.getSource() == chooseCalculatorImpl){
@@ -245,7 +249,8 @@ public class CalcGUI  implements ActionListener{
                 // uses the original currencies + the ones that already got created in the interface earlier
                 calc.setCurrencies(currencyCarry);
                 menuBar.setVisible(true);
-                updateCurrenciesAndComboBoxes();
+                updateCurrencies();
+                updateComboBoxes();
             }
             // as enum
             if (chosenImpl.equals(ASENUM)) {
@@ -253,7 +258,8 @@ public class CalcGUI  implements ActionListener{
                currencyCarry = calc.getCurrencies();
                calc = new CalcWithEnum();
                menuBar.setVisible(false);
-               updateCurrenciesAndComboBoxes();
+               updateCurrencies();
+               updateComboBoxes();
             }
         }
     }
@@ -276,11 +282,30 @@ public class CalcGUI  implements ActionListener{
 
     /**
      * sets the values in the combo boxes, that display the currencies
-     * creates a file that stores the currencies, so they stay saved after closing
      * also uses the CalcInt interface
      */
 
-    private void updateCurrenciesAndComboBoxes() {
+    private void updateComboBoxes() {
+        // comboBoxes need an array of Strings to work
+        // to not change currencyNames to Array 3 times, we have the currencyNamesExport variable
+        currencyNamesExport = currencies.stream().map(Currency::getName).toArray(String[]::new);
+
+        fromCurrencyName.setModel(new DefaultComboBoxModel<>(currencyNamesExport));
+        toCurrencyName.setModel(new DefaultComboBoxModel<>(currencyNamesExport));
+        // slightly big expression
+        // makes currencies with no euro and to an array of Strings
+        currencyNamesExport = currencies
+                .stream()
+                .map(Currency::getName)
+                .filter(c -> !c.equals(euro.getName()))
+                .toArray(String[]::new);
+        changeExchangeRateBox.setModel(new DefaultComboBoxModel<>(currencyNamesExport));
+    }
+
+    /**
+     * updates the currencies and saves them to the currencies.txt text-file
+     */
+    void updateCurrencies(){
         currencies = calc.getCurrencies();
         if (chosenImpl.equals(ASINTERFACE)) {
             try {
@@ -293,20 +318,5 @@ public class CalcGUI  implements ActionListener{
                 System.err.println(e.getMessage());
             }
         }
-
-        // comboBoxes need an array of Strings to work
-        // to not change currencyNames to Array 3 times, we have the currencyNamesExport variable
-        currencyNamesExport = currencies.stream().map(Currency::getName).toArray(String[]::new);
-
-        fromCurrencyName.setModel(new DefaultComboBoxModel<>(currencyNamesExport));
-        toCurrencyName.setModel(new DefaultComboBoxModel<>(currencyNamesExport));
-        // slightly big expression
-        // makes the same list but with no euro, so we don´t change it´s value
-        currencyNamesExport = currencies
-                .stream()
-                .map(Currency::getName)
-                .filter(c -> !c.equals(euro.getName()))
-                .toArray(String[]::new);
-        changeExchangeRateBox.setModel(new DefaultComboBoxModel<>(currencyNamesExport));
     }
 }
