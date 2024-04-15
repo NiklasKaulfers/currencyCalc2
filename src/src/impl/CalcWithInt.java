@@ -30,13 +30,13 @@ public class CalcWithInt implements CalcInt {
     @Override
     public void addCurrency(Currency a) {
         String currencyName = a.getName();
-        String correctedName = "";
+        StringBuilder correctedName = new StringBuilder();
         for (int i = 0; i < currencyName.length() ; i++) {
             if (Character.isLetter(currencyName.charAt(i))) {
-                correctedName += currencyName.charAt(i);
+                correctedName.append(currencyName.charAt(i));
             }
         }
-        a.setName(correctedName);
+        a.setName(correctedName.toString());
         boolean exists =
                 currencies
                         .stream()

@@ -53,19 +53,19 @@ public class CalcGUI  implements ActionListener{
                 String line;
                 while ((line = br.readLine()) != null) {
                     boolean foundSwitch = false;
-                    String currencyName = "";
-                    String currencyValue = "";
+                    StringBuilder currencyName = new StringBuilder();
+                    StringBuilder currencyValue = new StringBuilder();
                     for (int i = 0; i < line.length(); i++) {
                         if (Character.isDigit(line.charAt(i))) {
                             foundSwitch = true;
                         }
                         if (!foundSwitch) {
-                            currencyName = currencyName + line.charAt(i);
+                            currencyName.append(line.charAt(i));
                         } else {
-                            currencyValue = currencyValue + line.charAt(i);
+                            currencyValue.append(line.charAt(i));
                         }
                     }
-                    currencies.add(new Currency(currencyName, Double.parseDouble(currencyValue)));
+                    currencies.add(new Currency(currencyName.toString(), Double.parseDouble(currencyValue.toString())));
                 }
                 br.close();
             } catch (IOException e) {
