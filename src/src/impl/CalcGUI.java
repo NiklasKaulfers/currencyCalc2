@@ -37,6 +37,7 @@ public class CalcGUI  implements ActionListener{
 
     /**
      * basic creating of the GUI
+     * @throws IOException Error-handling for the reader and writer
      */
     public CalcGUI() throws IOException{
         JFrame frame = new JFrame();
@@ -236,6 +237,8 @@ public class CalcGUI  implements ActionListener{
                 // Update currency arrays and combo boxes
                 updateCurrencies();
                 updateComboBoxes();
+                addCurrencyNameField.setText("");
+                addCurrencyValueField.setText("");
             }
         }
         if (e.getSource() == chooseCalculatorImpl){
@@ -267,7 +270,6 @@ public class CalcGUI  implements ActionListener{
     /**
      * calls the exchange function of CalcInt
      */
-    // calls the exchange methode through the CalcInt interface
     private void convert() {
         // only activates if value is given, so no error occurs
         if (!fromCurrencyValue.getText().isEmpty()){
