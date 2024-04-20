@@ -9,10 +9,6 @@ import java.io.IOException;
  */
 class Main {
     public static void main(String[] args) {
-        try {
             new CalcGUI();
-        } catch (IOException e) {
-            System.err.println("Error: " + e.getMessage());
-        }
     }
 }

@@ -9,7 +9,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 /**
@@ -38,9 +37,8 @@ public class CalcGUI  implements ActionListener{
 
     /**
      * basic creating of the GUI
-     * @throws IOException Error-handling for the reader and writer
      */
-    public CalcGUI() throws IOException{
+    public CalcGUI(){
         JFrame frame = new JFrame();
         frame.setSize(new Dimension(700, 480));
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
