@@ -10,6 +10,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 /**
  * the GUI that allows user input and shows the output for the currency calculator
@@ -179,37 +180,35 @@ public class CalcGUI  implements ActionListener{
         if (e.getSource() == fromCurrencyValue) {
             convert();
         }
-        // TODO: code similar, maybe with one call ?
-        // change fromCurrencyName and toCurrencyName to one
-        // this should be faster tho
         if (e.getSource() == fromCurrencyName){
             // it´s different from other code and sets the result easier
             String selectedFromCurrency = (String) fromCurrencyName.getSelectedItem();
-            try {
-                fromCurrency = currencies
-                        .stream()
-                        .filter(currency -> currency.getName().equals(selectedFromCurrency))
-                        .findFirst()
-                        .get();
-            } catch (NoSuchElementException ex){
-                System.err.println(ex.getMessage());
-                // sets fromCurrency to currency at 0 to not cause error at convert
+            Optional<Currency> possibleCurrency = currencies
+                    .stream()
+                    .filter(currency -> currency.getName().equals(selectedFromCurrency))
+                    .findFirst();
+            if(possibleCurrency.isPresent()){
+                fromCurrency = possibleCurrency.get();
+            } else {
+                System.err.println("error getting currency: " + selectedFromCurrency);
                 fromCurrency = currencies.getFirst();
             }
             convert();
         }
 
         if (e.getSource() == toCurrencyName){
-        // TODO: Testings here
-            try {
-                toCurrency = currencies
-                        .stream()
-                        .filter(currency -> currency.getName().equals(toCurrencyName.getSelectedItem()))
-                        .findFirst()
-                        .get();
-            }catch (NoSuchElementException ex){
-                System.err.println(ex.getMessage());
-                // sets toCurrency to currency at 1 to not cause error in convert
+            String selectedCurrencyName = (String) toCurrencyName.getSelectedItem();
+            Optional<Currency> optionalCurrency = currencies.stream()
+                    .filter(currency -> currency.getName().equals(selectedCurrencyName))
+                    .findFirst();
+
+            if (optionalCurrency.isPresent()) {
+                // If the currency is found, assign it to toCurrency
+                toCurrency = optionalCurrency.get();
+            } else {
+                // If no currency is found, handle the error
+                System.err.println("Currency not found: " + selectedCurrencyName);
+                // Set toCurrency to a default currency (for example, the first currency in the list)
                 toCurrency = currencies.get(1);
             }
             convert();
