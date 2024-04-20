@@ -2,8 +2,6 @@ package src;
 
 import src.impl.*;
 
-import java.io.IOException;
-
 /**
  * creates an Object of CalcGUI
  */
