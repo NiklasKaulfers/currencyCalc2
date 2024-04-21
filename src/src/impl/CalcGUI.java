@@ -69,7 +69,7 @@ public class CalcGUI  implements ActionListener{
                 }
                 br.close();
             } catch (IOException e) {
-                System.err.println(e.getMessage());
+                System.err.println("error in BufferedReader " + e.getMessage());
             }
         } else {
             currencies.add(euro);
@@ -314,7 +314,7 @@ public class CalcGUI  implements ActionListener{
                 }
                 writer.close();
             } catch (IOException e) {
-                System.err.println(e.getMessage());
+                System.err.println("error in fileWriter: " + e.getMessage());
             }
         }
     }
