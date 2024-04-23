@@ -32,7 +32,7 @@ public class CalcWithEnum implements CalcInt {
      * this function has no use and sends an error message when called
      */
     @Override
-    public void addCurrency(Currency a) {
+    public void addCurrency(Currency a){
         System.err.println("no currency adding in enum.");
     }
 
@@ -48,8 +48,8 @@ public class CalcWithEnum implements CalcInt {
      * @return returns an ArrayList of the currencies usable in this Calculator
      */
     @Override
-    public List<Currency> getCurrencies() {
-        List<Currency> currencies = new ArrayList<>();
+    public ArrayList<Currency> getCurrencies() {
+        ArrayList<Currency> currencies = new ArrayList<>();
         for (CurrencyEnum value: CurrencyEnum.values()){
             currencies.add(value.currency);
         }

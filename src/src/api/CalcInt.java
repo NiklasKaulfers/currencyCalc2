@@ -1,6 +1,7 @@
 package src.api;
 
 import src.impl.Currency;
+import src.impl.UCE;
 
 import java.util.List;
 
@@ -19,9 +20,9 @@ public interface CalcInt {
 
     /**
      * allows the user to add a currency
-     * @param a the currency a will get added to the usable currencies.
+     * @param a the currency a will get added to the usable currencies, throws UnknowCurrencyException UCE.
      */
-    void addCurrency(Currency a);
+    void addCurrency(Currency a) throws UCE;
 
     /**
      * setter for the currencies ArrayList

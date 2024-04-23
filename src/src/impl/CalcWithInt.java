@@ -28,13 +28,16 @@ public class CalcWithInt implements CalcInt {
      * @param a the currency that will get added to the Calculator and will be usable afterward
      */
     @Override
-    public void addCurrency(Currency a) {
+    public void addCurrency(Currency a) throws UCE {
         String currencyName = a.getName();
         StringBuilder correctedName = new StringBuilder();
         for (int i = 0; i < currencyName.length() ; i++) {
             if (Character.isLetter(currencyName.charAt(i))) {
                 correctedName.append(currencyName.charAt(i));
             }
+        }
+        if (correctedName.toString().isEmpty()){
+            throw new UCE("no currency");
         }
         a.setName(correctedName.toString());
         boolean exists =

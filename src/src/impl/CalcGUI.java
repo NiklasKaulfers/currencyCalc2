@@ -230,12 +230,16 @@ public class CalcGUI  implements ActionListener{
                         addCurrencyNameField.getText().toUpperCase(),
                         Double.parseDouble(addCurrencyValueField.getText())
                 );
-                calc.addCurrency(newCurrency);
+                try {
+                    calc.addCurrency(newCurrency);
+                    updateCurrencies();
+                    updateComboBoxes();
+                    addCurrencyNameField.setText("");
+                    addCurrencyValueField.setText("");
+                } catch (UCE a){
+                    System.err.println(a.getMessage());
+                }
                 // Update currency arrays and combo boxes
-                updateCurrencies();
-                updateComboBoxes();
-                addCurrencyNameField.setText("");
-                addCurrencyValueField.setText("");
             }
         }
         if (e.getSource() == chooseCalculatorImpl){
