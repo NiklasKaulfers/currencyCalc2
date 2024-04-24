@@ -7,7 +7,7 @@ the gui is pretty intuitive to use, incase of errors feel free to correct me.
 
 ## Features  
   calculates and displays exchange rates inbetween currencies  
-  incase the asInterface is   
+  incase you use AsInterface (one of the 2 useable ways):  
 ->chosen allows to add further currencies  
 ->allows to change the exchange rate (default here is euro, so 1 euro == n other currency)  
 ->saves the currencies after every change  
