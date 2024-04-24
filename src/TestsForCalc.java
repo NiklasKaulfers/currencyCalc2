@@ -1,25 +1,28 @@
-import src.api.CalcInt;
+import src.api.*;
 import src.impl.*;
 
 import java.util.ArrayList;
 
+// test file for the calculator
 public class TestsForCalc {
     static int fails = 0;
     public static void main(String[] args) {
-        System.out.println("tests for calcWithInt: ");
-        testsForCalcWithInt();
+        System.out.println("Test started");
 
-        System.out.println("tests for calcWithEnum: ");
+        testsForCalcWithInt();
         testsForCalcWithEnum();
 
-        System.out.println("errors in tests: " + fails);
+        System.out.println("Test ended (errors in test: " + fails + ")");
     }
     static void testsForCalcWithEnum(){
         CalcInt calc = new CalcWithEnum();
         ArrayList<Currency> currencies = (ArrayList<Currency>) calc.getCurrencies();
         // euro, euro as euro is 1st enum
         double test1 = calc.exchange(currencies.getFirst(), currencies.getFirst(), 100000);
-        equalsThis(100000, test1, "test1");
+        equalsThis(100000, test1, "test1 enum");
+
+        double test2 = calc.exchange(currencies.getFirst(), currencies.get(1), 10);
+        equalsThis(10.9, test2, "test2 enum");
     }
 
     static void testsForCalcWithInt(){
@@ -40,27 +43,27 @@ public class TestsForCalc {
         calc.setCurrencies(currencies);
 
         double test1 = calc.exchange(euro,two,10);
-        equalsThis(20, test1, "test1");
+        equalsThis(20, test1, "test1 int");
         double test2 = calc.exchange(two,aFourth,1);
-        equalsThis(0.13, test2, "test2");
+        equalsThis(0.13, test2, "test2 int");
         double test3 = calc.exchange(euro,euro,999999999);
-        equalsThis(999999999, test3, "test3");
+        equalsThis(999999999, test3, "test3 int");
         // euro to dollar
         double test4 = calc.exchange(euro, dollar, 100);
-        equalsThis(120, test4, "test4");
+        equalsThis(120, test4, "test4 int");
 
         // dollar to yen
         double test5 = calc.exchange(dollar, yen, 50);
-        equalsThis(4166.67, test5, "test5");
+        equalsThis(4166.67, test5, "test5 int");
 
         // yen to euro
         double test6 = calc.exchange(yen, euro, 5000);
-        equalsThis(50, test6, "test6");
+        equalsThis(50, test6, "test6 int");
     }
 
     static void equalsThis(double expected, double result, String testCase) {
         if (expected != result) {
-            System.out.println("false: " + testCase);
+            System.err.println("false: " + testCase);
             fails++;
         }
     }

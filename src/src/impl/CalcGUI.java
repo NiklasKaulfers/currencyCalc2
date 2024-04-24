@@ -14,9 +14,8 @@ import java.util.Optional;
 /**
  * the GUI that allows user input and shows the output for the currency calculator
  */
-public class CalcGUI  implements ActionListener{
-    private final JTextField fromCurrencyValue, changeExchangeRateTextField
-            , addCurrencyNameField, addCurrencyValueField;
+public class CalcGUI  implements ActionListener {
+    private final JTextField fromCurrencyValue, changeExchangeRateTextField, addCurrencyNameField, addCurrencyValueField;
     private final JLabel toCurrencyValue;
     private final JComboBox<String> fromCurrencyName, toCurrencyName, changeExchangeRateBox;
     private final JComboBox<String> chooseCalculatorImpl;
@@ -25,6 +24,7 @@ public class CalcGUI  implements ActionListener{
 
     private final String ASENUM = "as enum";
     private final String ASINTERFACE = "as interface";
+    private final Currency euro = new Currency("EUR", 1);
     private CalcInt calc = new CalcWithInt();
     private Currency fromCurrency;
     private Currency toCurrency;
@@ -32,13 +32,12 @@ public class CalcGUI  implements ActionListener{
     private List<Currency> currencies;
     private List<Currency> currencyCarry;
     private String chosenImpl = ASINTERFACE;
-    Currency euro = new Currency("EUR", 1);
 
 
     /**
      * basic creating of the GUI
      */
-    public CalcGUI(){
+    public CalcGUI() {
         JFrame frame = new JFrame();
         frame.setSize(new Dimension(700, 480));
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -46,39 +45,9 @@ public class CalcGUI  implements ActionListener{
         // Default currencies
         currencies = new ArrayList<>();
 
-        // file reader for save-files
-        if (new File("currencies.txt").isFile()) {
-            try {
-                BufferedReader br = new BufferedReader(new FileReader("currencies.txt"));
-                String line;
-                while ((line = br.readLine()) != null) {
-                    boolean foundSwitch = false;
-                    StringBuilder currencyName = new StringBuilder();
-                    StringBuilder currencyValue = new StringBuilder();
-                    for (int i = 0; i < line.length(); i++) {
-                        if (Character.isDigit(line.charAt(i))) {
-                            foundSwitch = true;
-                        }
-                        if (!foundSwitch) {
-                            currencyName.append(line.charAt(i));
-                        } else {
-                            currencyValue.append(line.charAt(i));
-                        }
-                    }
-                    currencies.add(new Currency(currencyName.toString(), Double.parseDouble(currencyValue.toString())));
-                }
-                br.close();
-            } catch (IOException e) {
-                System.err.println("error in BufferedReader " + e.getMessage());
-            }
-        } else {
-            currencies.add(euro);
-            Currency usd = new Currency("USD", 1.09);
-            currencies.add(usd);
-            Currency czk = new Currency("CZK", 25);
-            currencies.add(czk);
-        }
-        calc.setCurrencies(currencies);
+        // TODO: implement proper saving
+        //brSaving();
+        intakeCurrencies();
 
         JPanel toolsPanel = new JPanel();
         toolsPanel.setPreferredSize(new Dimension(frame.getWidth(), 50));
@@ -171,21 +140,22 @@ public class CalcGUI  implements ActionListener{
 
     /**
      * handles the events if the user interacts with the GUI
-     *  @param e the event to be processed
+     *
+     * @param e the event to be processed
      */
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == fromCurrencyValue) {
             convert();
         }
-        if (e.getSource() == fromCurrencyName){
+        if (e.getSource() == fromCurrencyName) {
             // it´s different from other code and sets the result easier
             String selectedFromCurrency = (String) fromCurrencyName.getSelectedItem();
             Optional<Currency> possibleCurrency = currencies
                     .stream()
                     .filter(currency -> currency.getName().equals(selectedFromCurrency))
                     .findFirst();
-            if(possibleCurrency.isPresent()){
+            if (possibleCurrency.isPresent()) {
                 fromCurrency = possibleCurrency.get();
             } else {
                 System.err.println("error getting currency: " + selectedFromCurrency);
@@ -194,7 +164,7 @@ public class CalcGUI  implements ActionListener{
             convert();
         }
 
-        if (e.getSource() == toCurrencyName){
+        if (e.getSource() == toCurrencyName) {
             String selectedCurrencyName = (String) toCurrencyName.getSelectedItem();
             Optional<Currency> optionalCurrency = currencies.stream()
                     .filter(currency -> currency.getName().equals(selectedCurrencyName))
@@ -222,8 +192,8 @@ public class CalcGUI  implements ActionListener{
             convert();
         }
         if (e.getSource() == addCurrency) {
-            if (! addCurrencyNameField.getText().isEmpty()
-                    && ! addCurrencyValueField.getText().isEmpty()
+            if (!addCurrencyNameField.getText().isEmpty()
+                    && !addCurrencyValueField.getText().isEmpty()
                     && Double.parseDouble(addCurrencyValueField.getText()) != 0) {
 
                 Currency newCurrency = new Currency(
@@ -236,13 +206,13 @@ public class CalcGUI  implements ActionListener{
                     updateComboBoxes();
                     addCurrencyNameField.setText("");
                     addCurrencyValueField.setText("");
-                } catch (UCE a){
+                } catch (UCE a) {
                     System.err.println(a.getMessage());
                 }
                 // Update currency arrays and combo boxes
             }
         }
-        if (e.getSource() == chooseCalculatorImpl){
+        if (e.getSource() == chooseCalculatorImpl) {
             toCurrencyValue.setText("---");
             chosenImpl = (String) chooseCalculatorImpl.getSelectedItem();
             assert chosenImpl != null;
@@ -258,12 +228,12 @@ public class CalcGUI  implements ActionListener{
             }
             // as enum
             if (chosenImpl.equals(ASENUM)) {
-               // to Carry the values over in case new ones got created
-               currencyCarry = calc.getCurrencies();
-               calc = new CalcWithEnum();
-               menuBar.setVisible(false);
-               updateCurrencies();
-               updateComboBoxes();
+                // to Carry the values over in case new ones got created
+                currencyCarry = calc.getCurrencies();
+                calc = new CalcWithEnum();
+                menuBar.setVisible(false);
+                updateCurrencies();
+                updateComboBoxes();
             }
         }
     }
@@ -273,12 +243,12 @@ public class CalcGUI  implements ActionListener{
      */
     private void convert() {
         // only activates if value is given, so no error occurs
-        if (!fromCurrencyValue.getText().isEmpty()){
+        if (!fromCurrencyValue.getText().isEmpty()) {
             double toExchangeCurrencyConverted =
                     calc.exchange(fromCurrency
-                    , toCurrency
-                    , Double.parseDouble(fromCurrencyValue.getText())
-            );
+                            , toCurrency
+                            , Double.parseDouble(fromCurrencyValue.getText())
+                    );
             toCurrencyValue.setText(Double.toString(toExchangeCurrencyConverted));
         }
     }
@@ -308,18 +278,56 @@ public class CalcGUI  implements ActionListener{
     /**
      * updates the currencies and saves them to the currencies.txt text-file
      */
-    void updateCurrencies(){
+    private void updateCurrencies() {
         currencies = calc.getCurrencies();
-        if (chosenImpl.equals(ASINTERFACE)) {
-            try {
-                BufferedWriter writer = new BufferedWriter(new FileWriter("currencies.txt"));
-                for (Currency currency : currencies) {
-                    writer.write(currency.getName() + currency.getValueToEuro() + "\n");
+        outputCurrencies();
+    }
+
+    /**
+     * handles the reading of the save files
+     * (unchecked typecast warning -> cleared with check)
+     */
+    private void intakeCurrencies() {
+        if (new File("currencies.dat").exists()) {
+            try (ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream("currencies.dat"))) {
+                Object obj = inputStream.readObject();
+                if (obj instanceof ArrayList<?>) {
+                    if (((ArrayList<?>) obj).getFirst() instanceof Currency) {
+                        currencies = (ArrayList<Currency>) obj;
+                    } else {
+                        System.err.println("error getting currencies: safe file issues");
+                        defaultCurrencies();
+                    }
+                } else {
+                    System.err.println("error in fileReader: safe file issues");
                 }
-                writer.close();
-            } catch (IOException e) {
-                System.err.println("error in fileWriter: " + e.getMessage());
+            } catch (IOException | ClassNotFoundException ioEx) {
+                System.err.println("error in fileInputStream: " + ioEx.getMessage());
+            }
+        } else {
+            defaultCurrencies();
+        }
+        calc.setCurrencies(currencies);
+    }
+
+    /**
+     * handles the writing of the save files
+     */
+    private void outputCurrencies() {
+        if (chosenImpl.equals(ASINTERFACE)) {
+            try (ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream("currencies.dat"))) {
+                outputStream.writeObject(currencies);
+            } catch (IOException ioEx) {
+                System.err.println("error in fileOutputStream: " + ioEx.getMessage());
             }
         }
+    }
+    private void defaultCurrencies(){
+        currencies = new ArrayList<>();
+        currencies.add(euro);
+        Currency usd = new Currency("USD", 1.09);
+        currencies.add(usd);
+        Currency czk = new Currency("CZK", 25);
+        currencies.add(czk);
     }
 }

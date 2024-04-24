@@ -25,6 +25,7 @@ public class CalcWithInt implements CalcInt {
     }
 
     /**
+     * adds a new Currency. throws an unknown currency exception if the currency is an empty string
      * @param a the currency that will get added to the Calculator and will be usable afterward
      */
     @Override
