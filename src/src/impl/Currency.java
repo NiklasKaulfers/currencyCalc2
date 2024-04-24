@@ -2,11 +2,18 @@ package src.impl;
 
 import java.io.Serializable;
 
+
 /**
- * defines each of the currencies
+ * a class that defines a Currency for later use in the CurrencyCalc
  */
 public class Currency implements Serializable {
+    /**
+     * the currencies name
+     */
     String name;
+    /**
+     * the currencies value to 1 euro
+     */
     double valueToEuro;
 
     /**

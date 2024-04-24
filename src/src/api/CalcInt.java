@@ -20,7 +20,8 @@ public interface CalcInt {
 
     /**
      * allows the user to add a currency
-     * @param a the currency a will get added to the usable currencies, throws UnknowCurrencyException UCE.
+     * @param a the currency a will get added to the usable currencies
+     * @throws UCE UnknownCurrencyException
      */
     void addCurrency(Currency a) throws UCE;
 

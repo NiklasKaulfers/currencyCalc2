@@ -3,9 +3,19 @@ import src.impl.*;
 
 import java.util.ArrayList;
 
-// test file for the calculator
+/**
+ * test file for the calculator
+ */
 public class TestsForCalc {
+    /**
+     * counts the tests that went wrong
+     */
     static int fails = 0;
+
+    /**
+     * starts tests which get printed to the commandline
+     * @param args classic main function does nothing
+     */
     public static void main(String[] args) {
         System.out.println("Test started");
 
@@ -14,6 +24,10 @@ public class TestsForCalc {
 
         System.out.println("Test ended (errors in test: " + fails + ")");
     }
+
+    /**
+     * tests for the enum which is implemented through the interface
+     */
     static void testsForCalcWithEnum(){
         CalcInt calc = new CalcWithEnum();
         ArrayList<Currency> currencies = (ArrayList<Currency>) calc.getCurrencies();
@@ -25,6 +39,9 @@ public class TestsForCalc {
         equalsThis(10.9, test2, "test2 enum");
     }
 
+    /**
+     * for the basic Calc implemented with the interface
+     */
     static void testsForCalcWithInt(){
         CalcInt calc = new CalcWithInt();
         ArrayList<Currency> currencies = new ArrayList<>();
@@ -61,6 +78,13 @@ public class TestsForCalc {
         equalsThis(50, test6, "test6 int");
     }
 
+    /**
+     * checks if the tests went right
+     * also counts errors and shows where they happened
+     * @param expected the expected result
+     * @param result the actual result
+     * @param testCase the name of the test
+     */
     static void equalsThis(double expected, double result, String testCase) {
         if (expected != result) {
             System.err.println("false: " + testCase);
