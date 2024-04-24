@@ -8,9 +8,9 @@ the gui is pretty intuitive to use, incase of errors feel free to correct me.
 ## Features  
   calculates and displays exchange rates inbetween currencies  
   incase the asInterface is   
-    chosen allows to add further currencies  
-    allows to change the exchange rate (default here is euro, so 1 euro == n other currency)  
-    saves the currencies after every change  
+->chosen allows to add further currencies  
+->allows to change the exchange rate (default here is euro, so 1 euro == n other currency)  
+->saves the currencies after every change  
   some code documentation (also javadocs, however not in github stored, but can be easily created with the code as the needed comments are already there)  
 
 ## Plans  
