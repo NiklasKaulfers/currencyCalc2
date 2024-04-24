@@ -45,8 +45,6 @@ public class CalcGUI  implements ActionListener {
         // Default currencies
         currencies = new ArrayList<>();
 
-        // TODO: implement proper saving
-        //brSaving();
         intakeCurrencies();
 
         JPanel toolsPanel = new JPanel();
