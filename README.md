@@ -5,7 +5,7 @@ this is a little currency calculator, which was a 2nd semester cs task.
 it is written in java and has some documentation on almost everything.  
 the gui is pretty intuitive to use, incase of errors feel free to correct me.  
 
-features:  
+## Features  
   calculates and displays exchange rates inbetween currencies  
   incase the asInterface is   
     chosen allows to add further currencies  
@@ -13,6 +13,6 @@ features:
     saves the currencies after every change  
   some code documentation (also javadocs, however not in github stored, but can be easily created with the code as the needed comments are already there)  
 
-plans:  
+## Plans  
   basically done (project is finished in class), but  
     possible future changes: making it so, that changing euro changes all the other currencies  
