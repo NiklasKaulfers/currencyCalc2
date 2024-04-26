@@ -138,7 +138,6 @@ public class CalcGUI  implements ActionListener {
 
     /**
      * handles the events if the user interacts with the GUI
-     *
      * @param e the event to be processed
      */
     @Override
@@ -207,7 +206,6 @@ public class CalcGUI  implements ActionListener {
                 } catch (UCE a) {
                     System.err.println(a.getMessage());
                 }
-                // Update currency arrays and combo boxes
             }
         }
         if (e.getSource() == chooseCalculatorImpl) {
@@ -290,14 +288,18 @@ public class CalcGUI  implements ActionListener {
             try (ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream("currencies.dat"))) {
                 Object obj = inputStream.readObject();
                 if (obj instanceof ArrayList<?>) {
-                    if (((ArrayList<?>) obj).getFirst() instanceof Currency) {
-                        currencies = (ArrayList<Currency>) obj;
-                    } else {
-                        System.err.println("error getting currencies: safe file issues");
-                        defaultCurrencies();
+                    currencies = new ArrayList<>();
+                    for (Object o : (ArrayList<?>) obj) {
+                        if (o instanceof Currency) {
+                            currencies.add((Currency) o);
+                        } else {
+                            System.err.println("error getting currencies: safe file issues (making of currency)");
+                            defaultCurrencies();
+                            break;
+                        }
                     }
                 } else {
-                    System.err.println("error in fileReader: safe file issues");
+                    System.err.println("error in fileReader: safe file issues (currencies cant be read)");
                 }
             } catch (IOException | ClassNotFoundException ioEx) {
                 System.err.println("error in fileInputStream: " + ioEx.getMessage());
@@ -320,6 +322,10 @@ public class CalcGUI  implements ActionListener {
             }
         }
     }
+
+    /**
+     * creates the default currencies for 1st open or if an error loading the saved currencies occurs
+     */
     private void defaultCurrencies(){
         currencies = new ArrayList<>();
         currencies.add(euro);
