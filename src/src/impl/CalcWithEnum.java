@@ -49,6 +49,7 @@ public class CalcWithEnum implements CalcInt {
      */
     @Override
     public ArrayList<Currency> getCurrencies() {
+        // TODO: this should be done better
         ArrayList<Currency> currencies = new ArrayList<>();
         for (CurrencyEnum value: CurrencyEnum.values()){
             currencies.add(value.currency);
